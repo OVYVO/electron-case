@@ -1,0 +1,59 @@
+{
+  "name": "electron-test",
+  "private": true,
+  "version": "0.0.0",
+  "main": "electron/main/index.js",
+  "scripts": {
+    "dev": "vite --host --mode development",
+    "build": "vite build && electron-builder",
+    "preview": "vite preview",
+    "electron": "electron ."
+  },
+  "build":{ 
+    "appId": "Markdown",
+    "copyright": "Copyright © 2023 Ryanyan",
+    "productName": "electron-test",
+    "asar": true,
+    "icon": "public/vite.svg",
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "dist-electron",
+      "dist"
+    ],
+    "mac": {
+      "artifactName": "${productName}_${version}.${ext}",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "${productName}_${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    }
+  },
+  "dependencies": {
+    "vue": "^3.3.8"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.5.0",
+    "electron": "^27.1.2",
+    "vite": "^5.0.0",
+    "vite-plugin-electron": "^0.15.4",
+    "vite-plugin-electron-renderer": "^0.14.5"
+  }
+}
