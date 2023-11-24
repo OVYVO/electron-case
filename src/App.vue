@@ -12,6 +12,9 @@ import HelloWorld from './components/HelloWorld.vue'
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
+  <p>electron版本：{{versions.electron}}</p>
+  <p>electron版本：{{versions.chrome}}</p>
+  <p>electron版本：{{versions.node}}</p>
 </template>
 
 <style scoped>

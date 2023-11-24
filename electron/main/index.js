@@ -2,17 +2,17 @@ const { app, BrowserWindow } = require("electron")
 const path = require("path")
 const WinState = require("electron-win-state").default
 
+//开发环境采用此种方式
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 const createWind = () => {
   const winState = new WinState({
-    defaultWidth: 1000,
+    defaultWidth: 1200,
     defaultHeight: 800
   })
   const mainWind = new BrowserWindow({
     ...winState.winOptions,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
       preload: path.join(__dirname, "../preload/index.js"),
     },
   })
@@ -24,7 +24,6 @@ const createWind = () => {
 app.whenReady().then(() => {
   createWind()
   app.on('activate', () => {
-    // 此处解决mac系统关闭app后，但程序坞中还存在图标，再次点击可以重新创建进程
     if (BrowserWindow.getAllWindows.length === 0) {
       createWind()
     } else {
