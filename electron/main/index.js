@@ -16,7 +16,7 @@ const createWind = () => {
       preload: path.join(__dirname, "../preload/index.js"),
     },
   })
-  mainWind.loadURL('http://192.168.60.199:5173/')
+  mainWind.loadURL('http://192.168.60.199:5173')
   mainWind.webContents.openDevTools()
   winState.manage(mainWind)
 }

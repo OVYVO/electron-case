@@ -1,7 +1,3 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div>
     <a href="https://vitejs.dev" target="_blank">
@@ -12,10 +8,25 @@ import HelloWorld from './components/HelloWorld.vue'
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
-  <p>electron版本：{{versions.electron}}</p>
-  <p>electron版本：{{versions.chrome}}</p>
-  <p>electron版本：{{versions.node}}</p>
+  <p>electron版本：{{electronVersion}}</p>
+  <p>chrome版本{{chromeVersion}}</p>
+  <p>node版本：{{nodeVersion}}</p>
 </template>
+
+<script setup>
+import { onMounted, ref } from 'vue';
+import HelloWorld from './components/HelloWorld.vue'
+
+let electronVersion = ref('')
+let chromeVersion = ref('')
+let nodeVersion = ref('')
+
+onMounted(() => {
+  electronVersion.value = versions.electron()
+  chromeVersion.value = versions.chrome()
+  nodeVersion.value = versions.node()
+})
+</script>
 
 <style scoped>
 .logo {
