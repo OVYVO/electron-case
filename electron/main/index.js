@@ -1,19 +1,24 @@
 const { app, BrowserWindow } = require("electron")
 const path = require("path")
+const WinState = require("electron-win-state").default
 
 
 const createWind = () => {
+  const winState = new WinState({
+    defaultWidth: 1000,
+    defaultHeight: 800
+  })
   const mainWind = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    ...winState.winOptions,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      preload: path.resolve(__dirname, "electron/preload/index.js"),
+      preload: path.join(__dirname, "../preload/index.js"),
     },
-  });
+  })
   mainWind.loadURL('http://192.168.60.199:5173/')
   mainWind.webContents.openDevTools()
+  winState.manage(mainWind)
 }
 
 app.whenReady().then(() => {
