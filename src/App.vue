@@ -25,6 +25,7 @@ onMounted(() => {
   electronVersion.value = versions.electron()
   chromeVersion.value = versions.chrome()
   nodeVersion.value = versions.node()
+  console.log(electronAPI.ipcRenderer)
 })
 </script>
 
