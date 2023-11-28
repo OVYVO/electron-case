@@ -2,14 +2,15 @@ const { BrowserWindow } = require("electron")
 const WinState = require("electron-win-state").default
 const path = require("path")
 const isDev = require('electron-is-dev')
-const { handleIPC } = require('./ipc.js')
+const { handleIPC } = require('./ipcHandle')
 
+let mainWind
 const createWind = () => {
   const winState = new WinState({
     defaultWidth: 414,
     defaultHeight: 896
   })
-  const mainWind = new BrowserWindow({
+  mainWind = new BrowserWindow({
     ...winState.winOptions,
     show: false,
     webPreferences: {
@@ -28,5 +29,8 @@ const createWind = () => {
   winState.manage(mainWind)
   handleIPC()
 }
+const sendMainWind = (channel, ...args) => {
+  mainWind.webContents.send(channel, ...args)
+}
 
-module.exports = { createWind }
+module.exports = { createWind, sendMainWind }

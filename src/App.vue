@@ -1,35 +1,62 @@
 <template>
   <div class="main-container">
-    <!-- <p>electron版本：{{electronVersion}}</p>
-    <p>chrome版本{{chromeVersion}}</p>
-    <p>node版本：{{nodeVersion}}</p> -->
-    {{time}}
+    <div>
+      <p>倒计时：{{time}}</p>
+      <button @click="createTimer">开始番茄钟</button>
+      <button @click="stopTimer">停止番茄钟</button>
+    </div>
     <p>连接状态</p>
+    <p>我的控制码：{{myControlCode}}</p>
     <input placeholder="控制码" type="number" v-model="controlCode">
-    <button @click="createTimer">开始</button>
+    <button @click="openControlScreen">发送控制请求</button>
+    
+    <p>electron版本：{{electronVersion}}</p>
+    <p>chrome版本{{chromeVersion}}</p>
+    <p>node版本：{{nodeVersion}}</p>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, onUnmounted } from 'vue'
 import Timer from 'timer.js'
 
 let electronVersion = ref('')
 let chromeVersion = ref('')
 let nodeVersion = ref('')
 let newTimer = ref(null)
-let time = ref('')
-let controlCode = ref('')
+let time = ref('00:00')
+let myControlCode = ref('')
+let controlCode = ref(undefined)
 
 onMounted(() => {
-  // electronVersion.value = versions.electron()
-  // chromeVersion.value = versions.chrome()
-  // nodeVersion.value = versions.node()
-  createTimer()
+  electronVersion.value = versions.electron()
+  chromeVersion.value = versions.chrome()
+  nodeVersion.value = versions.node()
+  login()
+  electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
+    console.log('========')
+    console.log(args)
+    console.log('========')
+  })
 })
 
+onUnmounted(()=>{
+  electronAPI.ipcRenderer.removeListener('control-status')
+})
+
+const openControlScreen = ()=>{
+  if(!controlCode.value) return alert('请输入控制码') 
+  electronAPI.ipcRenderer.send('request-control-screen',controlCode.value)
+}
+
+const login = ()=>{
+  electronAPI.ipcRenderer.invoke('user-login').then(res=>{
+    myControlCode.value = res
+  })
+}
+
 const createTimer = ()=>{
-  if(newTimer.value) newTimer.value.off()
+  if(newTimer.value) newTimer.value.pause()
   newTimer.value = new Timer({
     ontick: (ms)=>{
       let s = (ms / 1000).toFixed(0)
@@ -44,7 +71,10 @@ const createTimer = ()=>{
       })
     }
   })
-  newTimer.value.start(5)
+  newTimer.value.start(5000)
+}
+const stopTimer = ()=>{
+  if(newTimer.value) newTimer.value.stop()
 }
 </script>
 

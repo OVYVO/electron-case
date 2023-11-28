@@ -7,5 +7,9 @@ contextBridge.exposeInMainWorld('versions', {
 })
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  ipcRenderer
+  ipcRenderer: {
+    ...ipcRenderer,
+    on: ipcRenderer.on.bind(ipcRenderer),
+    removeListener: ipcRenderer.removeListener.bind(ipcRenderer),
+  }
 })

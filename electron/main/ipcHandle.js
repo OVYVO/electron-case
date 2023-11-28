@@ -1,4 +1,7 @@
-const { ipcMain, Notification } = require('electron')}
+const { ipcMain, Notification } = require('electron')
+const { sendMainWind } = require('./createMainWindow')
+
+console.log('****', sendMainWind)
 
 const handleIPC = () => {
   ipcMain.handle('timer-end', async () => {
@@ -15,6 +18,17 @@ const handleIPC = () => {
     notification.on('close', () => {
       console.log('取消')
     })
+  })
+  ipcMain.handle('user-login', async () => {
+    let code = Math.floor(Math.random() * (999999 - 100000)) + 100000
+    return code
+  })
+  ipcMain.on('request-control-screen', (e, remoteCode) => {
+    console.log(remoteCode)
+    console.log(sendMainWind)
+    //TODO: 服务端代码
+    //sendMainWindow('control-status', remoteCode, 1)
+    // createControlWindow()
   })
 }
 

@@ -8,7 +8,7 @@
     "dev": "vite --host --mode development",
     "build": "vite build && electron-builder",
     "preview": "vite preview",
-    "electron": "nodemon --exec electron . --watch ./ --ext .js,.html,.css,.vue"
+    "electron": "nodemon --exec electron . --watch ./ --ext .vue"
   },
   "build": {
     "appId": "Markdown",

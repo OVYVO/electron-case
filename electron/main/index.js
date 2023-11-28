@@ -1,5 +1,5 @@
 const { app } = require("electron")
-const { createWind } = require('./createMainWindow.js')
+const { createWind } = require('./createMainWindow')
 
 //开发环境采用此种方式
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
