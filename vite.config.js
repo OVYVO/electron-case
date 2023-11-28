@@ -5,6 +5,9 @@ import renderer from 'vite-plugin-electron-renderer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: 5175,
+  },
   resolve: {
     alias: {
       '@': '/src',

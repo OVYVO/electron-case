@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "main": "electron/main/index.js",
   "scripts": {
+    "start": "concurrently \"npm run dev\" \"wait-on http://192.168.60.199:5175/ && npm run electron\"",
     "dev": "vite --host --mode development",
     "build": "vite build && electron-builder",
     "preview": "vite preview",
@@ -47,10 +48,13 @@
     }
   },
   "dependencies": {
+    "concurrently": "^8.2.2",
     "dayjs": "^1.11.10",
+    "electron-is-dev": "^2.0.0",
     "electron-win-state": "^1.1.22",
     "timer.js": "^1.0.4",
-    "vue": "^3.3.8"
+    "vue": "^3.3.8",
+    "wait-on": "^7.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.0",

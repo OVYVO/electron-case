@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Notification } = require("electron")
 const path = require("path")
 const WinState = require("electron-win-state").default
+const isDev = require('electron-is-dev')
 
 //开发环境采用此种方式
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
@@ -17,9 +18,12 @@ const createWind = () => {
       preload: path.join(__dirname, "../preload/index.js"),
     },
   })
-  mainWind.loadURL('http://192.168.60.199:5174')
-  mainWind.webContents.openDevTools()
-
+  if (isDev) {
+    mainWind.loadURL('http://192.168.60.199:5175')
+    mainWind.webContents.openDevTools()
+  } else {
+    // mainWind.loadFile()
+  }
   mainWind.once('ready-to-show', () => {
     mainWind.show()
   })
