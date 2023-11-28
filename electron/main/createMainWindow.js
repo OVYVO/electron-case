@@ -27,10 +27,7 @@ const createWind = () => {
     mainWind.show()
   })
   winState.manage(mainWind)
-  handleIPC()
-}
-const sendMainWind = (channel, ...args) => {
-  mainWind.webContents.send(channel, ...args)
+  handleIPC(mainWind)
 }
 
-module.exports = { createWind, sendMainWind }
+module.exports = { createWind }
