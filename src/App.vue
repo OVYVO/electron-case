@@ -4,6 +4,9 @@
     <p>chrome版本{{chromeVersion}}</p>
     <p>node版本：{{nodeVersion}}</p> -->
     {{time}}
+    <p>连接状态</p>
+    <input placeholder="控制码" type="number" v-model="controlCode">
+    <button @click="createTimer">开始</button>
   </div>
 </template>
 
@@ -16,6 +19,7 @@ let chromeVersion = ref('')
 let nodeVersion = ref('')
 let newTimer = ref(null)
 let time = ref('')
+let controlCode = ref('')
 
 onMounted(() => {
   // electronVersion.value = versions.electron()
