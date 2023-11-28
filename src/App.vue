@@ -5,7 +5,7 @@
       <button @click="createTimer">开始番茄钟</button>
       <button @click="stopTimer">停止番茄钟</button>
     </div>
-    <p>连接状态</p>
+    <p>连接状态：{{statusMap[controlStatus]}}</p>
     <p>我的控制码：{{myControlCode}}</p>
     <input placeholder="控制码" type="number" v-model="controlCode">
     <button @click="openControlScreen">发送控制请求</button>
@@ -27,6 +27,12 @@ let newTimer = ref(null)
 let time = ref('00:00')
 let myControlCode = ref('')
 let controlCode = ref(undefined)
+let controlStatus = ref()
+let statusMap = {
+  '0': '连接失败',
+  '1': '连接中',
+  '2': '连接成功',
+}
 
 onMounted(() => {
   electronVersion.value = versions.electron()
@@ -34,9 +40,9 @@ onMounted(() => {
   nodeVersion.value = versions.node()
   login()
   electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
-    console.log('========')
-    console.log(args)
-    console.log('========')
+    const [remoteCode,status] = args
+    if(controlCode.value !== remoteCode) return alert('连接错误')
+    controlStatus.value = status
   })
 })
 
