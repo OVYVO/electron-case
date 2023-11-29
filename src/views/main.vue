@@ -36,15 +36,15 @@ let statusMap = {
 }
 
 onMounted(() => {
-  electronVersion.value = versions.electron()
-  chromeVersion.value = versions.chrome()
-  nodeVersion.value = versions.node()
-  login()
-  electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
-    const [remoteCode,status] = args
-    if(controlCode.value !== remoteCode) return alert('连接错误')
-    controlStatus.value = status
-  })
+  // electronVersion.value = versions.electron()
+  // chromeVersion.value = versions.chrome()
+  // nodeVersion.value = versions.node()
+  // login()
+  // electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
+  //   const [remoteCode,status] = args
+  //   if(controlCode.value !== remoteCode) return alert('连接错误')
+  //   controlStatus.value = status
+  // })
 })
 
 onUnmounted(()=>{

@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('versions', {
   electron: () => process.versions.electron
 })
 
+
 contextBridge.exposeInMainWorld('electronAPI', {
   ipcRenderer: {
     ...ipcRenderer,
