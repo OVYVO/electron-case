@@ -6,9 +6,12 @@
 
 <script setup>
 import {ref} from 'vue'
+const peer = require('./peer-control')
 
 const screenDom = ref(null)
-
+peer.on('add-stream', (stream)=>{
+  play(stream)
+})
 const play = (stream)=>{
   screenDom.value.srcObject = stream
   screenDom.value.onloadedmetadata = ()=>{

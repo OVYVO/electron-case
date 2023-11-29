@@ -13,6 +13,7 @@ const createControlWind = () => {
   })
   if (isDev) {
     controlWind.loadURL('http://192.168.60.199:5175/#/control')
+    controlWind.webContents.openDevTools()
   } else {
     // mainWind.loadFile()
   }
