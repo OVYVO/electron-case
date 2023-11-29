@@ -1,15 +1,18 @@
 const { app } = require("electron")
-const { createWind } = require('./createMainWindow')
+// const { createWind } = require('./createMainWindow')
+const { createControlWind } = require('./createControlWindow')
 
 //开发环境采用此种方式
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
 app.whenReady().then(() => {
-  createWind()
+  // createWind()
+  createControlWind()
 })
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows.length === 0) {
-    createWind()
+    // createWind()
+    createControlWind()
   } else {
     BrowserWindow.getAllWindows[0].focus()
   }

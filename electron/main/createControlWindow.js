@@ -12,7 +12,7 @@ const createControlWind = () => {
     ...winState.winOptions,
   })
   if (isDev) {
-    controlWind.loadURL('https://www.baidu.com')
+    controlWind.loadURL('http://192.168.60.199:5175/#/control')
   } else {
     // mainWind.loadFile()
   }
