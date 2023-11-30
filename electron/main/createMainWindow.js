@@ -56,5 +56,4 @@ const createWind = () => {
   winState.manage(mainWind)
   handleIPC(mainWind)
 }
-
 module.exports = { createWind }

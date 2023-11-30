@@ -9,7 +9,7 @@ import { onMounted, ref } from 'vue'
 
 const screenDom = ref(null)
 
-onMounted(async ()=>{
+onMounted(async () => {
   //getScreenStream()
   const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
   getScreenStream(sourceId)
@@ -17,12 +17,12 @@ onMounted(async ()=>{
 
 const play = (stream) => {
   screenDom.value.srcObject = stream
-  screenDom.value.onloadedmetadata = ()=>{
+  screenDom.value.onloadedmetadata = () => {
     screenDom.value.play()
   }
 }
 
-const getScreenStream = async(sourceId)=>{
+const getScreenStream = async (sourceId) => {
   console.log('==============')
   console.log(navigator)
   console.log('==============')
@@ -45,6 +45,4 @@ const getScreenStream = async(sourceId)=>{
 }
 </script>
 
-<style lang="less" scoped>
-
-</style>
+<style lang="less" scoped></style>

@@ -9,7 +9,7 @@
     <p>我的控制码：{{myControlCode}}</p>
     <input placeholder="控制码" type="number" v-model="controlCode">
     <button @click="openControlScreen">发送控制请求</button>
-    
+
     <p>electron版本：{{electronVersion}}</p>
     <p>chrome版本{{chromeVersion}}</p>
     <p>node版本：{{nodeVersion}}</p>
@@ -47,33 +47,33 @@ onMounted(() => {
   // })
 })
 
-onUnmounted(()=>{
+onUnmounted(() => {
   electronAPI.ipcRenderer.removeListener('control-status')
 })
 
-const openControlScreen = ()=>{
-  if(!controlCode.value) return alert('请输入控制码') 
-  electronAPI.ipcRenderer.send('request-control-screen',controlCode.value)
+const openControlScreen = () => {
+  if (!controlCode.value) return alert('请输入控制码')
+  electronAPI.ipcRenderer.send('request-control-screen', controlCode.value)
 }
 
-const login = ()=>{
-  electronAPI.ipcRenderer.invoke('user-login').then(res=>{
+const login = () => {
+  electronAPI.ipcRenderer.invoke('user-login').then(res => {
     myControlCode.value = res
   })
 }
 
-const createTimer = ()=>{
-  if(newTimer.value) newTimer.value.pause()
+const createTimer = () => {
+  if (newTimer.value) newTimer.value.pause()
   newTimer.value = new Timer({
-    ontick: (ms)=>{
+    ontick: (ms) => {
       let s = (ms / 1000).toFixed(0)
       let ss = s % 60
-      let mm = (s/60).toFixed(0)
+      let mm = (s / 60).toFixed(0)
       time.value = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`
     },
-    onend: ()=>{
+    onend: () => {
       time.value = '00:00'
-      electronAPI.ipcRenderer.invoke('timer-end','end').then(res=>{
+      electronAPI.ipcRenderer.invoke('timer-end', 'end').then(res => {
         console.log(res)
       })
     }
@@ -81,13 +81,11 @@ const createTimer = ()=>{
 
   newTimer.value.start(20)
 }
-const stopTimer = ()=>{
-  if(newTimer.value) newTimer.value.stop()
+const stopTimer = () => {
+  if (newTimer.value) newTimer.value.stop()
 }
 </script>
 
 <style scoped lang="less">
-.main-container{
-
-}
+.main-container {}
 </style>
