@@ -1,6 +1,6 @@
 <template>
   <div>
-    <video ref="screenDom"></video>
+    <video ref="screenDom" style="width: 100%;height: 100%;object-fit: contain;"></video>
   </div>
 </template>
 
