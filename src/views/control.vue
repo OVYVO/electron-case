@@ -6,7 +6,6 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-
 const screenDom = ref(null)
 
 onMounted(async () => {

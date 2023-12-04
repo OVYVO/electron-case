@@ -35,6 +35,8 @@ let statusMap = {
   '2': '连接成功',
 }
 
+// TODO监控鼠标键盘事件同步webrtc数据流给控制端
+
 onMounted(() => {
   // electronVersion.value = versions.electron()
   // chromeVersion.value = versions.chrome()
