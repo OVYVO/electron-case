@@ -89,5 +89,12 @@ const stopTimer = () => {
 </script>
 
 <style scoped lang="less">
-.main-container {}
+.main-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 </style>
