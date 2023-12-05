@@ -2,7 +2,8 @@ const WebSocket = require('ws')
 const EventEmitter = require('events')
 const signal = new EventEmitter()
 
-const ws = new WebSocket('ws:127.0.0.1:5173')
+//需要实现后端代码逻辑
+const ws = new WebSocket('ws:127.0.0.1:8080')
 
 ws.on('open', () => {
   console.log('Socket连接成功')
@@ -23,7 +24,7 @@ const invoke = (event, data, answerEvent) => {
     signal.once(answerEvent, resolve)
     setTimeout(() => {
       reject('超时')
-    }， 5000)
+    }, 5000)
   })
 }
 

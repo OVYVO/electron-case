@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "main": "electron/main/index.js",
   "scripts": {
-    "start": "concurrently \"npm run dev\" \"wait-on http://localhost:5175/ && npm run electron\"",
+    "start": "concurrently \"npm run server\"  \"npm run dev\" \"wait-on http://localhost:5175/ && npm run electron\"",
     "dev": "vite --host --mode development",
     "build": "vite build && electron-builder",
     "preview": "vite preview",
-    "electron": "nodemon --exec electron . --watch ./ --ext .vue"
+    "electron": "nodemon --exec electron . --watch ./ --ext .vue",
+    "server": "node ./server/index.js"
   },
   "build": {
     "appId": "Markdown",
