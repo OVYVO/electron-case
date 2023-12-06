@@ -27,4 +27,8 @@ const handleIPC = () => {
   })
 }
 
+const send = (channel, ...args) => {
+  controlWind.webContents.send(channel, ...args)
+}
+
 module.exports = { createControlWind }
