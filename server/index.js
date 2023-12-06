@@ -24,15 +24,16 @@ wss.on('connection', (ws, request, client) => {
     if (event == 'login') {
       ws.sendData('logined', { code })
     } else if (event == 'control') {
+      console.log('---服务端接收control请求---请求码：', data.remoteCode)
       let remoteCode = +data.remoteCode
       if (code2ws.has(remoteCode)) {
-        ws.sendData('controoled', { remoteCode })
+        ws.sendData('controlled', { remoteCode })
         ws.sendRemote = code2ws.get(remoteCode).sendData
         ws.sendRemote('be-controlled', { remoteCode: code })
-      } else if (event === 'forward') {
-        // data: {event,data}
-        ws.sendRemote(data.event, data.data)
       }
+    } else if (event === 'forward') {
+      // data: {event,data}
+      ws.sendRemote(data.event, data.data)
     }
   })
 })

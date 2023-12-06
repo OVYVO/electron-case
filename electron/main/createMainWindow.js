@@ -8,8 +8,8 @@ let mainWind
 
 const createWind = () => {
   const winState = new WinState({
-    defaultWidth: 414,
-    defaultHeight: 896
+    defaultWidth: 300,
+    defaultHeight: 600
   })
   mainWind = new BrowserWindow({
     ...winState.winOptions,
@@ -29,4 +29,8 @@ const createWind = () => {
   })
   winState.manage(mainWind)
 }
-module.exports = { createWind }
+
+const send = (channel, ...args) => {
+  mainWind.webContents.send(channel, ...args)
+}
+module.exports = { createWind, send }

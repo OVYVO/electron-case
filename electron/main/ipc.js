@@ -1,4 +1,6 @@
 const { ipcMain, Notification } = require("electron")
+const { send: sendMainWin } = require('./createMainWindow')
+const { createControlWind } = require('./createControlWindow')
 const signal = require('./ws')
 
 const handleIPC = () => {
@@ -24,12 +26,21 @@ const handleIPC = () => {
     return code
   })
   ipcMain.on('control', (e, remoteCode) => {
-    // mainWind.webContents.send('control-status', remoteCode, 2)
-    // createControlWind()
-    signal.send('control', { remote })
+    signal.send('control', { remoteCode })
   })
-
-
+  signal.on('controlled', (data) => {
+    console.log('=====controlled======')
+    console.log(data)
+    console.log('===========')
+    createControlWind()
+    sendMainWin('control-status', data.remoteCode, 1)
+  })
+  signal.on('be-controlled', (data) => {
+    console.log('=====be-controlled======')
+    console.log(data)
+    console.log('===========')
+    sendMainWin('control-status', data.remoteCode, 2)
+  })
 }
 
 module.exports = handleIPC

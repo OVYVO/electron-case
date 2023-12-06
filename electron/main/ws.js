@@ -10,12 +10,12 @@ ws.on('open', () => {
 })
 ws.on('message', (msg) => {
   let data = JSON.parse(msg)
-  console.log('ws接收:', data)
+  console.log('客户端ws接收:', data)
   signal.emit(data.event, data.data)
 })
 
 const send = (event, data) => {
-  console.log(`发送${event}事件:`, data)
+  console.log(`客户端发送${event}事件:`, data)
   ws.send(JSON.stringify({ event, data }))
 }
 const invoke = (event, data, answerEvent) => {

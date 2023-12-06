@@ -8,7 +8,7 @@ const path = require('path')
 let controlWind
 const createControlWind = () => {
   const winState = new WinState({
-    defaultWidth: 800,
+    defaultWidth: 300,
     defaultHeight: 600
   })
   controlWind = new BrowserWindow({

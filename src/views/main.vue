@@ -31,8 +31,8 @@ let controlStatus = ref('')
 let statusMap = {
   '': '未连接',
   '0': '连接失败',
-  '1': '连接中',
-  '2': '连接成功',
+  '1': '已控制',
+  '2': '被控制',
 }
 
 // TODO监控鼠标键盘事件同步webrtc数据流给控制端
@@ -42,11 +42,7 @@ onMounted(() => {
   chromeVersion.value = versions.chrome()
   nodeVersion.value = versions.node()
   login()
-  // electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
-  //   const [remoteCode,status] = args
-  //   if(controlCode.value !== remoteCode) return alert('连接错误')
-  //   controlStatus.value = status
-  // })
+  watchChange()
 })
 
 onUnmounted(() => {
@@ -55,7 +51,15 @@ onUnmounted(() => {
 
 const openControlScreen = () => {
   if (!controlCode.value) return alert('请输入控制码')
-  electronAPI.ipcRenderer.send('request-control-screen', controlCode.value)
+  electronAPI.ipcRenderer.send('control', controlCode.value)
+}
+
+const watchChange = () => {
+  electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
+    const [remoteCode, status] = args
+    if (controlCode.value !== remoteCode) return alert('连接错误')
+    controlStatus.value = status
+  })
 }
 
 const login = () => {
