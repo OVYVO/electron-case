@@ -57,7 +57,6 @@ const openControlScreen = () => {
 const watchChange = () => {
   electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
     const [remoteCode, status] = args
-    if (controlCode.value !== remoteCode) return alert('连接错误')
     controlStatus.value = status
   })
 }
