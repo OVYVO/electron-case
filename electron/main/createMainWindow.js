@@ -1,5 +1,4 @@
 const { BrowserWindow } = require("electron")
-const WinState = require("electron-win-state").default
 const path = require("path")
 const isDev = require('electron-is-dev')
 const { createControlWind } = require('./createControlWindow.js')
@@ -7,12 +6,9 @@ const { createControlWind } = require('./createControlWindow.js')
 let mainWind
 
 const createWind = () => {
-  const winState = new WinState({
-    defaultWidth: 300,
-    defaultHeight: 600
-  })
   mainWind = new BrowserWindow({
-    ...winState.winOptions,
+    width: 1000,
+    height: 800,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
@@ -27,7 +23,6 @@ const createWind = () => {
   mainWind.once('ready-to-show', () => {
     mainWind.show()
   })
-  winState.manage(mainWind)
 }
 
 const send = (channel, ...args) => {

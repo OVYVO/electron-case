@@ -1,18 +1,12 @@
 const { BrowserWindow, desktopCapturer, ipcMain } = require("electron")
-const WinState = require("electron-win-state").default
 const isDev = require('electron-is-dev')
 const path = require('path')
 
-
-
 let controlWind
 const createControlWind = () => {
-  const winState = new WinState({
-    defaultWidth: 300,
-    defaultHeight: 600
-  })
   controlWind = new BrowserWindow({
-    ...winState.winOptions,
+    width: 400,
+    height: 500,
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
     },
@@ -23,7 +17,6 @@ const createControlWind = () => {
   } else {
     // mainWind.loadFile()
   }
-  winState.manage(controlWind)
   handleIPC()
 }
 
