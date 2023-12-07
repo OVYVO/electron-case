@@ -7,12 +7,18 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 const screenDom = ref(null)
+const pc = ref(null)
 
 onMounted(async () => {
   //getScreenStream()
-  const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
-  getScreenStream(sourceId)
+  // const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
+  // getScreenStream(sourceId)
+  pc.value = new window.RTCPeerConnection({})
+  watchChange()
 })
+
+const watchChange = () => {
+}
 
 const play = (stream) => {
   screenDom.value.srcObject = stream
@@ -21,27 +27,7 @@ const play = (stream) => {
   }
 }
 
-const getScreenStream = async (sourceId) => {
-  console.log('==============')
-  console.log(navigator)
-  console.log('==============')
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: false,
-      video: {
-        mandatory: {
-          chromeMediaSource: 'desktop',
-          chromeMediaSourceId: sourceId,
-          width: window.screen.width,
-          height: window.screen.height
-        }
-      }
-    })
-    play(stream)
-  } catch (e) {
-    console.log(e)
-  }
-}
+
 </script>
 
 <style lang="less" scoped></style>

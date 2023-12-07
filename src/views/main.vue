@@ -34,8 +34,7 @@ let statusMap = {
   '1': '已控制',
   '2': '被控制',
 }
-
-// TODO监控鼠标键盘事件同步webrtc数据流给控制端
+let pc = ref(null)
 
 onMounted(() => {
   electronVersion.value = versions.electron()
@@ -44,7 +43,6 @@ onMounted(() => {
   login()
   watchChange()
 })
-
 onUnmounted(() => {
   electronAPI.ipcRenderer.removeListener('control-status')
 })
@@ -53,20 +51,11 @@ const openControlScreen = () => {
   if (!controlCode.value) return alert('请输入控制码')
   electronAPI.ipcRenderer.send('control', controlCode.value)
 }
-
-const watchChange = () => {
-  electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
-    const [remoteCode, status] = args
-    controlStatus.value = status
-  })
-}
-
 const login = () => {
   electronAPI.ipcRenderer.invoke('login').then(res => {
     myControlCode.value = res
   })
 }
-
 const createTimer = () => {
   if (newTimer.value) newTimer.value.pause()
   newTimer.value = new Timer({
@@ -89,6 +78,68 @@ const createTimer = () => {
 const stopTimer = () => {
   if (newTimer.value) newTimer.value.stop()
 }
+
+const watchChange = () => {
+  electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
+    const [remoteCode, status] = args
+    controlStatus.value = status
+    initP2PConnection()
+  })
+  electronAPI.ipcRenderer.on('offer', (e, offer) => {
+    pc.value.onicecandidate = (e) => {
+      electronAPI.ipcRenderer.send('forward', 'puppet-candidate', e.candidate)
+    }
+    // createAnswer(offer).then((answer) => {
+    //   ipcRenderer.send('forward', 'answer', { type: answer.type, sdp: answer.sdp })
+    // })
+  })
+}
+
+const initP2PConnection = () => {
+  pc.value = new window.RTCPeerConnection()
+  const offer = createOffer()
+  electronAPI.ipcRenderer.send('forward', 'offer', offer)
+}
+
+const createOffer = async () => {
+  let offer = await pc.value.createOffer({
+    offerToReceiveAudio: false,
+    offerToReceiveVideo: true
+  })
+  await pc.value.setLocalDescription(offer)
+  console.log('create-offer\n', JSON.stringify(pc.localDescription))
+  return pc.value.localDescription
+}
+const createAnswer = async (offer) => {
+  let stream = await getScreenStream()
+  pc.value.addStream(stream)
+  await pc.value.valuesetRemoteDescription(offer);
+  await pc.value.valuesetLocalDescription(await pc.value.createAnswer());
+  console.log('create answer\n', JSON.stringify(pc.localDescription))
+  return pc.value.localDescription
+}
+const getScreenStream = (sourceId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: {
+          mandatory: {
+            chromeMediaSource: 'desktop',
+            chromeMediaSourceId: sourceId,
+            width: window.screen.width,
+            height: window.screen.height
+          }
+        }
+      })
+      resolve(stream)
+    } catch (e) {
+      console.log(e)
+      reject()
+    }
+  })
+}
+
 </script>
 
 <style scoped lang="less">

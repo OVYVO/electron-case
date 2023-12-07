@@ -1,6 +1,6 @@
 const { ipcMain, Notification } = require("electron")
 const { send: sendMainWin } = require('./createMainWindow')
-const { createControlWind } = require('./createControlWindow')
+const { createControlWind, send: sendControllWin } = require('./createControlWindow')
 const signal = require('./ws')
 
 const handleIPC = () => {
@@ -29,17 +29,27 @@ const handleIPC = () => {
     signal.send('control', { remoteCode })
   })
   signal.on('controlled', (data) => {
-    console.log('=====controlled======')
-    console.log(data)
-    console.log('===========')
     createControlWind()
     sendMainWin('control-status', data.remoteCode, 1)
   })
   signal.on('be-controlled', (data) => {
-    console.log('=====be-controlled======')
-    console.log(data)
-    console.log('===========')
     sendMainWin('control-status', data.remoteCode, 2)
+  })
+  /**信令传输**/
+  ipcMain.on('forward', (e, event, data) => {
+    signal.send('forward', { event, data })
+  })
+  signal.on('offer', (data) => {
+    sendMainWindow('offer', data)
+  })
+  signal.on('answer', (data) => {
+    sendControllWin('answer', data)
+  })
+  signal.on('puppet-candidate', (data) => {
+    sendControllWin('candidate', data)
+  })
+  signal.on('control-candidate', (data) => {
+    sendMainWindow('candidate', data)
   })
 }
 
