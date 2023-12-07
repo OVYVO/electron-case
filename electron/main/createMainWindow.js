@@ -15,7 +15,7 @@ const createWind = () => {
     },
   })
   if (isDev) {
-    mainWind.loadURL('http://192.168.60.199:5175')
+    mainWind.loadURL('http://localhost:5175')
     mainWind.webContents.openDevTools()
   } else {
     // mainWind.loadFile()

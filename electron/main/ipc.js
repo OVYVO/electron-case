@@ -40,7 +40,7 @@ const handleIPC = () => {
     signal.send('forward', { event, data })
   })
   signal.on('offer', (data) => {
-    sendMainWindow('offer', data)
+    sendMainWin('offer', data)
   })
   signal.on('answer', (data) => {
     sendControllWin('answer', data)
@@ -49,7 +49,7 @@ const handleIPC = () => {
     sendControllWin('candidate', data)
   })
   signal.on('control-candidate', (data) => {
-    sendMainWindow('candidate', data)
+    sendMainWin('candidate', data)
   })
 }
 

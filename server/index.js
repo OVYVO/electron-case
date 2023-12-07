@@ -30,9 +30,14 @@ wss.on('connection', (ws, request, client) => {
         ws.sendRemote = code2ws.get(remoteCode).sendData
         ws.sendRemote('be-controlled', { remoteCode: code })
       }
-    } else if (event === 'forward') {
+    } else if (event == 'forward') {
       // data: {event,data}
-      ws.sendRemote(data.event, data.data)
+      let remoteCode = +data.remoteCode
+      console.log('******', data)
+      if (code2ws.has(data.data.remoteCode)) {
+        ws.sendRemote = code2ws.get(data.data.remoteCode).sendData
+        ws.sendRemote(data.event, data.data.offer)
+      }
     }
   })
 })

@@ -85,20 +85,24 @@ const watchChange = () => {
     controlStatus.value = status
     initP2PConnection()
   })
-  electronAPI.ipcRenderer.on('offer', (e, offer) => {
+  electronAPI.ipcRenderer.on('offer', (event, offer) => {
+    console.log(offer)
+    //TODO拿到offer之后怎么处理视频流数据，并且设置candidate
     pc.value.onicecandidate = (e) => {
-      electronAPI.ipcRenderer.send('forward', 'puppet-candidate', e.candidate)
+      console.log(e.candidate)
+      // electronAPI.ipcRenderer.send('forward', 'puppet-candidate', e.candidate)
     }
-    // createAnswer(offer).then((answer) => {
-    //   ipcRenderer.send('forward', 'answer', { type: answer.type, sdp: answer.sdp })
-    // })
   })
 }
 
-const initP2PConnection = () => {
+const initP2PConnection = async () => {
   pc.value = new window.RTCPeerConnection()
-  const offer = createOffer()
-  electronAPI.ipcRenderer.send('forward', 'offer', offer)
+  if (myControlCode.value == controlCode.value) return
+  const offerVal = await createOffer()
+  electronAPI.ipcRenderer.send('forward', 'offer', {
+    remoteCode: controlCode.value,
+    offer: JSON.stringify(offerVal)
+  })
 }
 
 const createOffer = async () => {
@@ -107,7 +111,6 @@ const createOffer = async () => {
     offerToReceiveVideo: true
   })
   await pc.value.setLocalDescription(offer)
-  console.log('create-offer\n', JSON.stringify(pc.localDescription))
   return pc.value.localDescription
 }
 const createAnswer = async (offer) => {
@@ -115,7 +118,7 @@ const createAnswer = async (offer) => {
   pc.value.addStream(stream)
   await pc.value.valuesetRemoteDescription(offer);
   await pc.value.valuesetLocalDescription(await pc.value.createAnswer());
-  console.log('create answer\n', JSON.stringify(pc.localDescription))
+  console.log('create answer\n', JSON.stringify(pc.value.localDescription))
   return pc.value.localDescription
 }
 const getScreenStream = (sourceId) => {

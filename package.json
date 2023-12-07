@@ -9,7 +9,7 @@
     "build": "vite build && electron-builder",
     "preview": "vite preview",
     "electron": "nodemon --exec electron . --watch ./ --ext .vue",
-    "server": "node ./server/index.js"
+    "server": "nodemon --exec node ./server/index.js --watch ./server .js"
   },
   "build": {
     "appId": "Markdown",
