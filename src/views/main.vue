@@ -87,7 +87,16 @@ const watchChange = () => {
   })
   electronAPI.ipcRenderer.on('offer', (event, offer) => {
     console.log(offer)
-    //TODO拿到offer之后怎么处理视频流数据，并且设置candidate
+    //TODO:傀儡端
+    //1.处理视频流数据
+    //2.设置傀儡端candidate
+    //3.createAnswer
+    //4.发送Answer
+
+    //TODO:控制端
+    //1.获取answer
+    //2.设置控制端的answer
+
     pc.value.onicecandidate = (e) => {
       console.log(e.candidate)
       // electronAPI.ipcRenderer.send('forward', 'puppet-candidate', e.candidate)
