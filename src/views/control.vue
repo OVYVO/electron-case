@@ -6,21 +6,51 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
 const screenDom = ref(null)
-const pc = ref(null)
+const remoteCode = ref(undefined)
+let pc = ref(null)
+
+const route = useRoute()
 
 onMounted(async () => {
-  //getScreenStream()
-  // const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
-  // getScreenStream(sourceId)
-  // pc.value = new window.RTCPeerConnection({})
+  remoteCode.value = route.query.remote
+  initP2PConnection()
   watchChange()
+  pc.value.onaddstream = (e) => {
+    console.log('监控傀儡端数据流', e)
+    play(e)
+  }
 })
 
 const watchChange = () => {
-  electronAPI.ipcRenderer.on('answer', async (event, stream) => {
-    console.log(stream)
+  electronAPI.ipcRenderer.on('answer', async (event, answer) => {
+    console.log('控制端收到Answer')
+    try {
+      const data = await pc.value.setRemoteDescription(JSON.parse(answer))
+    } catch (error) {
+      console.log(error)
+    }
   })
+}
+
+const initP2PConnection = async () => {
+  pc.value = new window.RTCPeerConnection()
+  const offerVal = await createOffer()
+  electronAPI.ipcRenderer.send('forward', 'offer', {
+    remoteCode: remoteCode.value,
+    res: JSON.stringify(offerVal)
+  })
+}
+
+// 创建offer
+const createOffer = async () => {
+  let offer = await pc.value.createOffer({
+    offerToReceiveAudio: false,
+    offerToReceiveVideo: true
+  })
+  await pc.value.setLocalDescription(offer)
+  return pc.value.localDescription
 }
 
 const play = (stream) => {

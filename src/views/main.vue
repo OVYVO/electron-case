@@ -6,8 +6,9 @@
       <button @click="stopTimer">停止番茄钟</button>
     </div>
     <p>连接状态：{{statusMap[controlStatus]}}</p>
+    <p v-if="controlStatus ==2 ">被{{rtCode}}控制</p>
     <p>我的控制码：{{myControlCode}}</p>
-    <input placeholder="控制码" type="number" v-model="controlCode">
+    <input placeholder="控制码" type="number" v-model="rtCode">
     <button @click="openControlScreen">发送控制请求</button>
 
     <p>electron版本：{{electronVersion}}</p>
@@ -26,8 +27,7 @@ let nodeVersion = ref('')
 let newTimer = ref(null)
 let time = ref('00:00')
 let myControlCode = ref('')
-let controlCode = ref(undefined) // 傀儡端code
-let becontrolCode = ref(undefined) //控制端code
+let rtCode = ref(undefined) // 远程code
 let controlStatus = ref('')
 let statusMap = {
   '': '未连接',
@@ -49,8 +49,8 @@ onUnmounted(() => {
 })
 
 const openControlScreen = () => {
-  if (!controlCode.value) return alert('请输入控制码')
-  electronAPI.ipcRenderer.send('control', controlCode.value)
+  if (!rtCode.value) return alert('请输入控制码')
+  electronAPI.ipcRenderer.send('control', rtCode.value)
 }
 const login = () => {
   electronAPI.ipcRenderer.invoke('login').then(res => {
@@ -84,22 +84,17 @@ const watchChange = () => {
   electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
     const [remoteCode, status] = args
     controlStatus.value = status
-    if (status == 2) { // 如果是傀儡端被控制，则将远程控制端code码保存
-      becontrolCode.value = remoteCode
+    if (status == 2) {
+      // 如果傀儡端被控制，则将远程控制端code码保存,并初始化连接
+      rtCode.value = remoteCode
+      initP2PConnection()
     }
-    initP2PConnection()
   })
-
-  //TODO:傀儡端
-  //1.处理视频流数据
-  //2.设置傀儡端candidate
-  //3.createAnswer
-  //4.发送Answer
   electronAPI.ipcRenderer.on('offer', async (event, offer) => {
     try {
       const answer = await createAnswer(offer)
       electronAPI.ipcRenderer.send('forward', 'answer', {
-        remoteCode: becontrolCode.value,
+        remoteCode: rtCode.value,
         res: JSON.stringify(answer)
       })
     } catch (error) {
@@ -108,35 +103,31 @@ const watchChange = () => {
   })
 }
 
-//TODO:控制端
-//1.获取answer
-//2.设置控制端的answer
-
 // 控制端创建P2P初始链接操作 获取offere
 const initP2PConnection = async () => {
   pc.value = new window.RTCPeerConnection()
-  if (myControlCode.value == controlCode.value) return
-  const offerVal = await createOffer()
-  electronAPI.ipcRenderer.send('forward', 'offer', {
-    remoteCode: controlCode.value,
-    res: JSON.stringify(offerVal)
-  })
+  // const offerVal = await createOffer()
+  // electronAPI.ipcRenderer.send('forward', 'offer', {
+  //   remoteCode: remoteCode,
+  //   res: JSON.stringify(offerVal)
+  // })
 }
 // 创建offer
-const createOffer = async () => {
-  let offer = await pc.value.createOffer({
-    offerToReceiveAudio: false,
-    offerToReceiveVideo: true
-  })
-  await pc.value.setLocalDescription(offer)
-  return pc.value.localDescription
-}
+// const createOffer = async () => {
+//   let offer = await pc.value.createOffer({
+//     offerToReceiveAudio: false,
+//     offerToReceiveVideo: true
+//   })
+//   await pc.value.setLocalDescription(offer)
+//   return pc.value.localDescription
+// }
+
 const createAnswer = async (offer) => {
   const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
   let stream = await getScreenStream(sourceId)
   pc.value.addStream(stream)
-  await pc.value.setRemoteDescription(JSON.parse(offer));
-  await pc.value.setLocalDescription(await pc.value.createAnswer());
+  await pc.value.setRemoteDescription(JSON.parse(offer))
+  await pc.value.setLocalDescription(await pc.value.createAnswer())
   return pc.value.localDescription
 }
 const getScreenStream = (sourceId) => {

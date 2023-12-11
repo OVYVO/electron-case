@@ -33,7 +33,7 @@ const handleIPC = () => {
     signal.send('control', { remoteCode })
   })
   signal.on('controlled', (data) => {
-    createControlWind()
+    createControlWind(data.remoteCode)
     sendMainWin('control-status', data.remoteCode, 1)
   })
   signal.on('be-controlled', (data) => {
