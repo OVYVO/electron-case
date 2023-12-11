@@ -25,7 +25,6 @@ onMounted(async () => {
 
 const watchChange = () => {
   electronAPI.ipcRenderer.on('answer', async (event, answer) => {
-    console.log('控制端收到Answer')
     try {
       const data = await pc.value.setRemoteDescription(JSON.parse(answer))
     } catch (error) {
