@@ -1,4 +1,4 @@
-const { ipcMain, Notification } = require("electron")
+const { ipcMain, desktopCapturer, Notification } = require("electron")
 const { send: sendMainWin } = require('./createMainWindow')
 const { createControlWind, send: sendControllWin } = require('./createControlWindow')
 const signal = require('./ws')
@@ -25,6 +25,10 @@ const handleIPC = () => {
     let { code } = await signal.invoke('login', null, 'logined')
     return code
   })
+  ipcMain.handle('get-screen-sources', async () => {
+    const sources = await desktopCapturer.getSources({ types: ['screen'] })
+    return sources[0].id
+  })
   ipcMain.on('control', (e, remoteCode) => {
     signal.send('control', { remoteCode })
   })
@@ -42,14 +46,15 @@ const handleIPC = () => {
   signal.on('offer', (data) => {
     sendMainWin('offer', data)
   })
+  signal.on('control-candidate', (data) => {
+    sendMainWin('candidate', data)
+  })
+  // 傀儡端
   signal.on('answer', (data) => {
     sendControllWin('answer', data)
   })
   signal.on('puppet-candidate', (data) => {
     sendControllWin('candidate', data)
-  })
-  signal.on('control-candidate', (data) => {
-    sendMainWin('candidate', data)
   })
 }
 

@@ -33,7 +33,6 @@ wss.on('connection', (ws, request, client) => {
     } else if (event == 'forward') {
       // data: {event,data}
       let remoteCode = +data.remoteCode
-      console.log('******', data)
       if (code2ws.has(data.data.remoteCode)) {
         ws.sendRemote = code2ws.get(data.data.remoteCode).sendData
         ws.sendRemote(data.event, data.data.offer)

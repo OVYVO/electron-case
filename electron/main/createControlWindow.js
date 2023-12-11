@@ -21,10 +21,10 @@ const createControlWind = () => {
 }
 
 const handleIPC = () => {
-  ipcMain.handle('get-screen-sources', async () => {
-    const sources = await desktopCapturer.getSources({ types: ['screen'] })
-    return sources[0].id
-  })
+  // ipcMain.handle('get-screen-sources', async () => {
+  //   const sources = await desktopCapturer.getSources({ types: ['screen'] })
+  //   return sources[0].id
+  // })
 }
 
 const send = (channel, ...args) => {

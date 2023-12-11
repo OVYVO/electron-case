@@ -13,7 +13,7 @@ onMounted(async () => {
   //getScreenStream()
   // const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
   // getScreenStream(sourceId)
-  pc.value = new window.RTCPeerConnection({})
+  // pc.value = new window.RTCPeerConnection({})
   watchChange()
 })
 

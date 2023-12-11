@@ -85,25 +85,29 @@ const watchChange = () => {
     controlStatus.value = status
     initP2PConnection()
   })
-  electronAPI.ipcRenderer.on('offer', (event, offer) => {
-    console.log(offer)
-    //TODO:傀儡端
-    //1.处理视频流数据
-    //2.设置傀儡端candidate
-    //3.createAnswer
-    //4.发送Answer
 
-    //TODO:控制端
-    //1.获取answer
-    //2.设置控制端的answer
-
-    pc.value.onicecandidate = (e) => {
-      console.log(e.candidate)
-      // electronAPI.ipcRenderer.send('forward', 'puppet-candidate', e.candidate)
+  //TODO:傀儡端
+  //1.处理视频流数据
+  //2.设置傀儡端candidate
+  //3.createAnswer
+  //4.发送Answer
+  electronAPI.ipcRenderer.on('offer', async (event, offer) => {
+    try {
+      const answer = await createAnswer(offer)
+      console.log('==========')
+      console.log(answer)
+      console.log('==========')
+    } catch (error) {
+      console.log(error)
     }
   })
 }
 
+//TODO:控制端
+//1.获取answer
+//2.设置控制端的answer
+
+// 控制端创建P2P初始链接操作 获取offere
 const initP2PConnection = async () => {
   pc.value = new window.RTCPeerConnection()
   if (myControlCode.value == controlCode.value) return
@@ -113,7 +117,7 @@ const initP2PConnection = async () => {
     offer: JSON.stringify(offerVal)
   })
 }
-
+// 创建offer
 const createOffer = async () => {
   let offer = await pc.value.createOffer({
     offerToReceiveAudio: false,
@@ -123,11 +127,11 @@ const createOffer = async () => {
   return pc.value.localDescription
 }
 const createAnswer = async (offer) => {
-  let stream = await getScreenStream()
+  const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
+  let stream = await getScreenStream(sourceId)
   pc.value.addStream(stream)
-  await pc.value.valuesetRemoteDescription(offer);
-  await pc.value.valuesetLocalDescription(await pc.value.createAnswer());
-  console.log('create answer\n', JSON.stringify(pc.value.localDescription))
+  await pc.value.setRemoteDescription(JSON.parse(offer));
+  await pc.value.setLocalDescription(await pc.value.createAnswer());
   return pc.value.localDescription
 }
 const getScreenStream = (sourceId) => {
