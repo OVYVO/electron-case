@@ -18,6 +18,9 @@ onMounted(async () => {
 })
 
 const watchChange = () => {
+  electronAPI.ipcRenderer.on('answer', async (event, stream) => {
+    console.log(stream)
+  })
 }
 
 const play = (stream) => {

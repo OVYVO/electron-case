@@ -5,8 +5,8 @@ const path = require('path')
 let controlWind
 const createControlWind = () => {
   controlWind = new BrowserWindow({
-    width: 400,
-    height: 500,
+    width: 1000,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, "../preload/index.js"),
     },

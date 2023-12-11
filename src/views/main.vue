@@ -26,7 +26,8 @@ let nodeVersion = ref('')
 let newTimer = ref(null)
 let time = ref('00:00')
 let myControlCode = ref('')
-let controlCode = ref(undefined)
+let controlCode = ref(undefined) // 傀儡端code
+let becontrolCode = ref(undefined) //控制端code
 let controlStatus = ref('')
 let statusMap = {
   '': '未连接',
@@ -83,6 +84,9 @@ const watchChange = () => {
   electronAPI.ipcRenderer.on('control-status', (event, ...args) => {
     const [remoteCode, status] = args
     controlStatus.value = status
+    if (status == 2) { // 如果是傀儡端被控制，则将远程控制端code码保存
+      becontrolCode.value = remoteCode
+    }
     initP2PConnection()
   })
 
@@ -94,9 +98,10 @@ const watchChange = () => {
   electronAPI.ipcRenderer.on('offer', async (event, offer) => {
     try {
       const answer = await createAnswer(offer)
-      console.log('==========')
-      console.log(answer)
-      console.log('==========')
+      electronAPI.ipcRenderer.send('forward', 'answer', {
+        remoteCode: becontrolCode.value,
+        res: JSON.stringify(answer)
+      })
     } catch (error) {
       console.log(error)
     }
@@ -114,7 +119,7 @@ const initP2PConnection = async () => {
   const offerVal = await createOffer()
   electronAPI.ipcRenderer.send('forward', 'offer', {
     remoteCode: controlCode.value,
-    offer: JSON.stringify(offerVal)
+    res: JSON.stringify(offerVal)
   })
 }
 // 创建offer

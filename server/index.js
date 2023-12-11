@@ -32,10 +32,15 @@ wss.on('connection', (ws, request, client) => {
       }
     } else if (event == 'forward') {
       // data: {event,data}
+      if (data.event === 'answer') {
+        console.log('===========')
+        console.log(data.data.remoteCode)
+        console.log('===========')
+      }
       let remoteCode = +data.remoteCode
       if (code2ws.has(data.data.remoteCode)) {
         ws.sendRemote = code2ws.get(data.data.remoteCode).sendData
-        ws.sendRemote(data.event, data.data.offer)
+        ws.sendRemote(data.event, data.data.res)
       }
     }
   })
