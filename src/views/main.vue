@@ -106,21 +106,7 @@ const watchChange = () => {
 // 控制端创建P2P初始链接操作 获取offere
 const initP2PConnection = async () => {
   pc.value = new window.RTCPeerConnection()
-  // const offerVal = await createOffer()
-  // electronAPI.ipcRenderer.send('forward', 'offer', {
-  //   remoteCode: remoteCode,
-  //   res: JSON.stringify(offerVal)
-  // })
 }
-// 创建offer
-// const createOffer = async () => {
-//   let offer = await pc.value.createOffer({
-//     offerToReceiveAudio: false,
-//     offerToReceiveVideo: true
-//   })
-//   await pc.value.setLocalDescription(offer)
-//   return pc.value.localDescription
-// }
 
 const createAnswer = async (offer) => {
   const sourceId = await electronAPI.ipcRenderer.invoke('get-screen-sources')
