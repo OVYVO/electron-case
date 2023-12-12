@@ -40,5 +40,13 @@ wss.on('connection', (ws, request, client) => {
       }
     }
   })
+  ws.on('close', () => {
+    code2ws.delete(code)
+    delete ws.sendRemote
+    clearTimeout(ws._closeTimeout);
+  })
+  ws._closeTimeout = setTimeout(() => {
+    ws.terminate();
+  }, 600000)
 })
 

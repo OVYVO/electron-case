@@ -10,6 +10,7 @@ import { useRoute } from 'vue-router'
 const screenDom = ref(null)
 const remoteCode = ref(undefined)
 let pc = ref(null)
+let candidates = ref([])
 
 const route = useRoute()
 
@@ -17,6 +18,10 @@ onMounted(async () => {
   remoteCode.value = route.query.remote
   initP2PConnection()
   watchChange()
+  pc.value.onicecandidate = (e) => {
+    console.log('candidate', JSON.stringify(e.candidate))
+    ipcRenderer.send('forward', 'control-candidate', e.candidate)
+  }
   pc.value.onaddstream = (e) => {
     console.log('监控傀儡端数据流', e)
     play(e)
@@ -50,6 +55,17 @@ const createOffer = async () => {
   })
   await pc.value.setLocalDescription(offer)
   return pc.value.localDescription
+}
+
+const addIceCandidate = async (candidate) => {
+  if (!candidate || !candidate.type) return
+  candidates.value.push(candidate)
+  if (pc.value.remoteDescription && pc.value.remoteDescription.type) {
+    for (let i = 0; i < candidates.value.length; i++) {
+      await pc.value.addIceCandidate(new RTCIceCandidate(candidates[i]))
+    }
+    candidates.value = []
+  }
 }
 
 const play = (stream) => {
