@@ -90,6 +90,9 @@ const watchChange = () => {
       initP2PConnection()
     }
   })
+  electronAPI.ipcRenderer.on('candidate', async (event, candidate) => {
+    addIceCandidate(JSON.parse(candidate))
+  })
   electronAPI.ipcRenderer.on('offer', async (event, offer) => {
     try {
       const answer = await createAnswer(offer)
@@ -103,9 +106,27 @@ const watchChange = () => {
   })
 }
 
+let candidates = ref([])
+const addIceCandidate = async (candidate) => {
+  if (!candidate) return
+  candidates.value.push(candidate)
+  if (pc.value.remoteDescription && pc.value.remoteDescription.type) {
+    candidates.value.forEach(async (item) => {
+      await pc.value.addIceCandidate(new RTCIceCandidate(item))
+    })
+    candidates.value = []
+  }
+}
+
 // 控制端创建P2P初始链接操作 获取offere
 const initP2PConnection = async () => {
   pc.value = new window.RTCPeerConnection()
+  pc.value.onicecandidate = (e) => {
+    electronAPI.ipcRenderer.send('forward', 'puppet-candidate', {
+      remoteCode: rtCode.value,
+      res: JSON.stringify(e.candidate)
+    })
+  }
 }
 
 const createAnswer = async (offer) => {
