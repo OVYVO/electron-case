@@ -49,6 +49,7 @@
     }
   },
   "dependencies": {
+    "about-window": "^1.15.2",
     "concurrently": "^8.2.2",
     "dayjs": "^1.11.10",
     "electron-is-dev": "^2.0.0",
