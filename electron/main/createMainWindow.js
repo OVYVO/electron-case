@@ -28,4 +28,8 @@ const createWind = () => {
 const send = (channel, ...args) => {
   mainWind.webContents.send(channel, ...args)
 }
-module.exports = { createWind, send }
+
+const show = () => {
+  mainWind.show()
+}
+module.exports = { createWind, send, show }

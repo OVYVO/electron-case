@@ -8,6 +8,7 @@ process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 app.whenReady().then(() => {
   createWind()
   handleIPC()
+  require('./trayAndMenu')
 })
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows.length === 0) {
