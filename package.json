@@ -1,5 +1,5 @@
 {
-  "name": "electron-test",
+  "name": "remote-controll",
   "private": true,
   "version": "0.0.0",
   "main": "electron/main/index.js",
@@ -13,8 +13,8 @@
   },
   "build": {
     "appId": "Markdown",
-    "copyright": "Copyright © 2023 Ryanyan",
-    "productName": "electron-test",
+    "copyright": "Copyright © 2023 RyanYan",
+    "productName": "RemoteControll",
     "asar": true,
     "icon": "public/vite.svg",
     "directories": {
